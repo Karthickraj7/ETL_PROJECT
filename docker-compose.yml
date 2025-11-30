@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: user_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./sql/seed_data.sql:/docker-entrypoint-initdb.d/02-seed.sql
+
+  api-service:
+    build: ./service
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: postgres
+      DB_NAME: user_management
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_PORT: 5432
+    depends_on:
+      - postgres
+    volumes:
+      - ./service:/app
+
+volumes:
+  postgres_data:
