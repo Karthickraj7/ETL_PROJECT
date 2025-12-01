@@ -2,9 +2,6 @@ from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from config import config
-from flask import Response
-import csv
-import io
 
 app = Flask(__name__)
 
@@ -55,21 +52,13 @@ def create_user():
         cur.close()
         conn.close()
 
-
-
-
-
-
-
-# get the all users
-
-
+# GET /users - Get all users with filters
 @app.route('/users', methods=['GET'])
 def get_users():
     company = request.args.get('company')
     bank = request.args.get('bank')
     pincode = request.args.get('pincode')
-
+    
     query = """
         SELECT u.*, 
                e.company_name, e.designation,
@@ -80,7 +69,7 @@ def get_users():
         WHERE 1=1
     """
     params = []
-
+    
     if company:
         query += " AND e.company_name = %s"
         params.append(company)
@@ -90,46 +79,45 @@ def get_users():
     if pincode:
         query += " AND u.pincode = %s"
         params.append(pincode)
-
+    
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(query, params)
     users = cur.fetchall()
     cur.close()
     conn.close()
-
-    if not users:
-        return jsonify({"message": "No users found"}), 404
-
-    return jsonify(users)
-
-
-
-
-
-
-
-
-
-
+    
+    return jsonify([dict(user) for user in users])
 
 # GET /users/{id} - Get specific user
 @app.route('/users/<int:user_id>', methods=['GET'])
-def get_single_user(user_id):
+def get_user(user_id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    
+    # Get user basic info
+    cur.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     user = cur.fetchone()
-    cur.close()
-    conn.close()
-
+    
     if not user:
         return jsonify({"error": "User not found"}), 404
-
-    return jsonify(user)
-
-
-
+    
+    # Get employment history
+    cur.execute("SELECT * FROM employment_info WHERE user_id = %s", (user_id,))
+    employment = cur.fetchall()
+    
+    # Get bank details
+    cur.execute("SELECT * FROM user_bank_info WHERE user_id = %s", (user_id,))
+    bank = cur.fetchall()
+    
+    cur.close()
+    conn.close()
+    
+    result = dict(user)
+    result['employment_history'] = [dict(emp) for emp in employment]
+    result['bank_details'] = [dict(bnk) for bnk in bank]
+    
+    return jsonify(result)
 
 # PUT /users/{id} - Update user
 @app.route('/users/<int:user_id>', methods=['PUT'])
