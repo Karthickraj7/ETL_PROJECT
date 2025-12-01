@@ -61,17 +61,11 @@ def create_user():
 
 
 
+# get the all users
 
 
-
-
-
-
-
-
-# GET /users - Get all users with filters
-@app.route('/users/csv', methods=['GET'])
-def get_users_csv():
+@app.route('/users', methods=['GET'])
+def get_users():
     company = request.args.get('company')
     bank = request.args.get('bank')
     pincode = request.args.get('pincode')
@@ -104,19 +98,10 @@ def get_users_csv():
     cur.close()
     conn.close()
 
-    output = io.StringIO()
-    writer = csv.DictWriter(output, fieldnames=users[0].keys())
-    writer.writeheader()
-    writer.writerows(users)
+    if not users:
+        return jsonify({"message": "No users found"}), 404
 
-    csv_data = output.getvalue()
-
-    return Response(
-        csv_data,
-        mimetype="text/csv",
-        headers={"Content-Disposition": "inline; filename=users.csv"}
-    )
-
+    return jsonify(users)
 
 
 
@@ -129,43 +114,19 @@ def get_users_csv():
 
 
 # GET /users/{id} - Get specific user
-@app.route('/users/<int:user_id>/csv', methods=['GET'])
-def get_user_csv(user_id):
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_single_user(user_id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    
     cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
     user = cur.fetchone()
-
     cur.close()
     conn.close()
 
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    output = io.StringIO()
-    writer = csv.DictWriter(output, fieldnames=user.keys())
-    writer.writeheader()
-    writer.writerow(user)
-
-    csv_data = output.getvalue()
-
-    return Response(
-        csv_data,
-        mimetype="text/csv",
-        headers={"Content-disposition": f"attachment; filename=user_{user_id}.csv"}
-    )
-
-
-
-
-
-
-
-
-
-
-
+    return jsonify(user)
 
 
 
