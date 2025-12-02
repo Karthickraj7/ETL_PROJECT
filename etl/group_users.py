@@ -89,3 +89,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# if you want to run etl code put this code.... 
+    #python group_users.py --output-dir output --db-uri "postgresql://postgres:karthickraj5@localhost/user_management"

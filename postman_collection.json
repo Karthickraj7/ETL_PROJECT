@@ -10,10 +10,7 @@
       "request": {
         "method": "POST",
         "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
+          { "key": "Content-Type", "value": "application/json" }
         ],
         "body": {
           "mode": "raw",
@@ -55,18 +52,15 @@
       }
     },
     {
-      "name": "Update User",
+      "name": "Update User with Employment and Bank",
       "request": {
         "method": "PUT",
         "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
+          { "key": "Content-Type", "value": "application/json" }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe Updated\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"1234567890\",\n  \"address_line1\": \"123 Main St\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"pincode\": \"400001\"\n}"
+          "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe Updated\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"1234567890\",\n  \"address_line1\": \"Updated Address\",\n  \"city\": \"Chennai\",\n  \"state\": \"Tamil Nadu\",\n  \"pincode\": \"600001\",\n  \"employment\": {\n    \"company_name\": \"Updated Corp\",\n    \"designation\": \"Updated Engineer\",\n    \"start_date\": \"2024-01-15\",\n    \"end_date\": null,\n    \"is_current\": true\n  },\n  \"bank\": {\n    \"bank_name\": \"SBI\",\n    \"account_number\": \"999988887777\",\n    \"ifsc\": \"SBIN0000999\",\n    \"account_type\": \"Current\"\n  }\n}"
         },
         "url": {
           "raw": "http://localhost:5000/users/1",
