@@ -30,7 +30,6 @@ A REST API for user management with ETL pipeline for data grouping.
 6. Run the app: cd service && python app.py
 
 ## API Endpoints
-
 ### Users
 - POST /users - Create new user with optional employment and bank details
 - GET /users - Get all users (optional filters: company, bank, pincode)

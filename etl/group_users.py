@@ -10,12 +10,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def get_db_connection(db_uri):
-    """Create database connection"""
     return psycopg2.connect(db_uri)
 
 def group_users_by_field(conn, field, output_dir):
-    """Group users by specified field and save to CSV"""
-    
     field_mapping = {
         'bank_name': ('user_bank_info', 'bank_name', 'group_by_bank'),
         'company_name': ('employment_info', 'company_name', 'group_by_company'),

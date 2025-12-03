@@ -105,7 +105,7 @@ def get_users():
     return jsonify({"users": users}), 200
 
 
-# GET SINGLE USER (Clean Output)
+# GET SINGLE USER 
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     conn = get_db_connection()
@@ -138,9 +138,7 @@ def get_user(user_id):
 
 
 
-# PUT — CLEAN JSON RESPONSE
-
-
+# PUT 
 
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -160,7 +158,7 @@ def update_user(user_id):
         if not old_user:
             return jsonify({"error": "User not found"}), 404
 
-        # ---------------- USER UPDATE ----------------
+        # USER UPDATE 
         user_fields = ["first_name", "last_name", "email", "phone",
                        "address_line1", "city", "state", "pincode"]
 
@@ -193,7 +191,7 @@ def update_user(user_id):
                 user_id
             ))
 
-        # ---------------- EMPLOYMENT UPDATE ----------------
+        # EMPLOYMENT UPDATE 
         if "employment" in data:
             new_emp = data["employment"]
 
@@ -242,7 +240,7 @@ def update_user(user_id):
                     new_emp.get("is_current", True)
                 ))
 
-        # ---------------- BANK UPDATE ----------------
+        #BANK UPDATE 
         if "bank" in data:
             new_bank = data["bank"]
 
@@ -290,7 +288,7 @@ def update_user(user_id):
 
         conn.commit()
 
-        # ---------------- FINAL RESPONSE ONLY CHANGES ----------------
+        # -FINAL RESPONSE ONLY CHANGE
         return jsonify({
             "updated_user_id": user_id,
             "updated_sections": updated_sections,
@@ -306,15 +304,6 @@ def update_user(user_id):
     finally:
         cur.close()
         conn.close()
-
-
-
-
-
-
-
-
-
 
 # DELETE USER
 @app.route('/users/<int:user_id>', methods=['DELETE'])
